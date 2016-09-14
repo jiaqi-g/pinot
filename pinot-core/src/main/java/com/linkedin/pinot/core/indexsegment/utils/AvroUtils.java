@@ -81,7 +81,16 @@ public class AvroUtils {
     for (final Field field : avroSchema.getFields()) {
       FieldSpec.FieldType fieldType;
 
-      if (field.name().contains(COUNT) || field.name().contains(METRIC)) {
+      String[] words = field.name().split("_");
+      boolean isMetric = false;
+      for (String w : words) {
+        if (w.equalsIgnoreCase(COUNT) || w.equalsIgnoreCase(METRIC)) {
+          isMetric = true;
+          break;
+        }
+      }
+
+      if (isMetric /*|| field.name().equalsIgnoreCase("viewer_sk")*/) {
         fieldType = FieldSpec.FieldType.METRIC;
       } else if (field.name().contains(DAY) || field.name().equalsIgnoreCase(DAYS_SINCE_EPOCH)) {
         fieldType = FieldSpec.FieldType.TIME;
